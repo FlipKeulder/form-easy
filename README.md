@@ -1,6 +1,6 @@
 # Form-Easy: Temporary Employment Record System
 #### Video Demo: https://youtu.be/oFC_GILm928
-#### Description:
+#### Description: Lightweight record management system
 
 **Form-Easy** was created out of necessity. I had to manage groups of temporary workers, and for every job event, I had to manually fill out three separate documents per person: a contract, a wage claim, and a payment acknowledgment form. Not only was this repetitive and error-prone, but I also had to calculate totals by hand, track participation across different dates, and store it all in an organized way which, frankly, it wasn’t.
 
