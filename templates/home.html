@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Form-Easy{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <header class="container mt-5 text-center">
+        <h1>Welcome to Form-Easy</h1>
+        <p>Your simple solution for completing temporary employee forms effortlessly.</p>
+        <div class="button-container">
+            <!-- I changed the buttons from primary to success purly for aesthetics due to the color scheme of the site -->
+            <a href="{{ url_for('employees') }}" class="btn btn-success">Employees</a>
+            <a href="{{ url_for('events') }}" class="btn btn-success">Events</a>
+            <a href="{{ url_for('forms') }}" class="btn btn-success">Forms</a>
+            <a href="{{ url_for('reports') }}" class="btn btn-success">Reports</a>
+        </div>
+    </header>
+
+    <!-- Feature Overview -->
+    <section class="container mt-5">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h3>📂 Employee Data</h3>
+                <p>Quickly add, remove, or update employee information.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>⚙️ Process Data</h3>
+                <p>Easily compile forms from selected data.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>📊 Export or Print Results</h3>
+                <p>Simply select export or print to view forms in PDF format or hard copy prints.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personal information for Final Video-->
+    <section>
+        <div class="video-intro" style="text-align: center; margin-top: 100px;">
+            <p><strong>Name:</strong> Flip</p>
+            <p><strong>GitHub Username:</strong> FlipKeulder</p>
+            <p><strong>edX Username:</strong> FlipKeulder</p>
+            <p><strong>Location:</strong> Newcastle, South Africa</p>
+            <p><strong>Date Recorded:</strong> July 5, 2025</p>
+        </div>
+    </section>
+
+{% endblock %}

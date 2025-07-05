@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Forms - Form-Easy{% endblock %}
+
+{% block content %}
+<section class="container mt-5">
+    <h2 class="text-center">Generate Forms</h2>
+    <p class="text-center">Select a month, event, and employee to generate their documents.</p>
+
+    <!-- Framed Forms Section -->
+    <div class="mx-auto p-4 shadow rounded" style="max-width: 900px;">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-6">
+                <label for="monthSelect" class="form-label text-light">Select Month</label>
+                <select id="monthSelect" class="form-select">
+                    <option value="">Selection</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="eventSelect" class="form-label text-light">Select Event</label>
+                <select id="eventSelect" class="form-select" disabled>
+                    <option value="">Selection</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Centered Employee Selection -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-6 text-center">
+                <label for="employeeSelect" class="form-label text-light w-100">Select Employee</label>
+                <select id="employeeSelect" class="form-select text-center" disabled>
+                    <option value="">Selection</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Centered Generate Button -->
+        <div class="text-center">
+            <button id="generateBtn" class="btn btn-secondary ms-3" disabled>
+                Generate Forms
+            </button>
+        </div>
+    </div>
+
+    <!-- Forms Feature Overview -->
+    <section class="container mt-5">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h3>🧭 Navigate with Ease</h3>
+                <p>Quickly drill down from month to event to employee using dropdown selectors.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>📄 Generate PDF Forms</h3>
+                <p>Export neat, printable forms for each employee’s participation in an event.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>✅ Customizable & Lightweight</h3>
+                <p>Forms align with your data structure and brand design—clear and consistent.</p>
+            </div>
+        </div>
+    </section>
+
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- This script handles the dynamic loading of months, events, and employees
+It uses the Fetch API to retrieve data from the server and populate dropdowns.-->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const monthSelect = document.getElementById("monthSelect");
+    const eventSelect = document.getElementById("eventSelect");
+    const employeeSelect = document.getElementById("employeeSelect");
+    const generateBtn = document.getElementById("generateBtn");
+
+    // Load available months
+    // This fetches the months from the server and populates the month dropdown.
+    // I used a simple GET request to retrieve the months, which are expected to be in
+    fetch("/get-months")
+        .then(res => res.json())
+        .then(data => {
+            data.months.forEach(month => {
+                monthSelect.appendChild(new Option(month, month));
+            });
+        })
+        .catch(err => console.error("Failed to load months:", err));
+
+    // On month change
+    // When the user selects a month, this fetches the events for that month.
+    // It resets the event and employee dropdowns and disables them until data is loaded.
+    monthSelect.addEventListener("change", () => {
+        const month = monthSelect.value;
+        resetDropdown(eventSelect, "Selection");
+        resetDropdown(employeeSelect, "Selection");
+        generateBtn.disabled = true;
+
+        if (!month) return;
+
+        // Fetch events for the selected month
+        // This uses a GET request to retrieve events associated with the selected month.
+        fetch(`/get-events/${month}`)
+            .then(res => res.json())
+            .then(data => {
+                populateDropdown(eventSelect, data.events.map(ev => ({
+                    label: `${ev.date} — ${ev.name}`,
+                    value: ev.id
+                })));
+                eventSelect.disabled = false;
+            })
+            // If the fetch fails, it resets the event dropdown and shows an error message.
+            .catch(err => {
+                console.error("Error fetching events:", err);
+                resetDropdown(eventSelect, "Failed to load events");
+            });
+    });
+
+    // On event change
+    // When the user selects an event, this fetches the employees assigned to that event.
+    // It resets the employee dropdown and disables the generate button until an employee is selected.
+    eventSelect.addEventListener("change", () => {
+        const month = monthSelect.value;
+        const eventId = eventSelect.value;
+        resetDropdown(employeeSelect, "Selection");
+        generateBtn.disabled = true;
+
+        if (!eventId) return;
+
+        // Fetch employees for the selected event
+        // This uses a GET request to retrieve employees associated with the selected event and month.
+        fetch(`/get-employees-in-event/${month}/${encodeURIComponent(eventId)}`)
+            .then(res => res.json())
+            .then(data => {
+                populateDropdown(employeeSelect, data.employees.map(e => ({
+                    label: `${e.surname}, ${e.name}`,
+                    value: e.id
+                })));
+                employeeSelect.disabled = false;
+            })
+            // If the fetch fails, it resets the employee dropdown and shows an error message.
+            .catch(err => {
+                console.error("Error fetching employees:", err);
+                resetDropdown(employeeSelect, "Failed to load employees");
+            });
+    });
+
+    // Enable button if employee selected
+    // This checks if an employee is selected and enables the generate button accordingly.
+    // It ensures that the button is only enabled when a valid employee is selected.
+    employeeSelect.addEventListener("change", () => {
+        generateBtn.disabled = !employeeSelect.value;
+    });
+
+    // Generate PDF
+    // When the user clicks the generate button, this opens a new window with the PDF for the selected employee.
+    // This allows the user to preview the form before printing or saving it.
+    // It constructs the URL based on the selected employee and event date.
+    generateBtn.addEventListener("click", () => {
+        const employeeId = employeeSelect.value;
+        const eventId = eventSelect.value;
+        if (!employeeId || !eventId) return;
+        const eventDate = eventId.split("_", 1)[0];
+        window.open(`/generate-employee-pdf/${employeeId}/${eventDate}`, "_blank");
+    });
+
+    // Helper functions
+    // These functions are used to reset and populate the dropdowns dynamically.
+    function resetDropdown(dropdown, placeholder) {
+        dropdown.innerHTML = `<option value="">${placeholder}</option>`;
+        dropdown.disabled = true;
+    }
+
+    // This function populates a dropdown with items.
+    // It takes an array of items, each with a label and value, and appends them as options.
+    // The first option is a placeholder for selection.
+    function populateDropdown(dropdown, items) {
+        dropdown.innerHTML = `<option value="">Selection</option>`;
+        items.forEach(item => {
+            dropdown.appendChild(new Option(item.label, item.value));
+        });
+    }
+});
+</script>
+{% endblock %}

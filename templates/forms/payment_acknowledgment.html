@@ -1,0 +1,37 @@
+<!-- The employment_agreement.html, payment_acknowledgment.html and wage_claim.html templates do not have a base template,
+as they are used for exporting data to PDF -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employment Agreement – Page 2</title>
+  <style>
+    body { font-family: 'Georgia', serif; margin: 2rem; line-height: 1.6; }
+    h3 { text-align: center; margin-bottom: 2rem; }
+    .field { margin-bottom: 1.2rem; }
+    .label { font-weight: bold; width: 200px; display: inline-block; }
+    .ack-box { border: 1px solid #444; padding: 1rem; margin-top: 2rem; }
+    .signature { margin-top: 3rem; }
+  </style>
+</head>
+<body>
+
+  <h3>Employee Acknowledgment of Wage Receipt</h3>
+
+  <div class="ack-box">
+    <p>I, <strong>{{ employee.Name }} {{ employee.Surname }}</strong>, confirm that I have received the full payment of <strong>R {{ event.AmountPayable }}</strong> in cash for work done on <strong>{{ event.Date }}</strong> for the event: <strong>{{ event.Name }}</strong>.</p>
+
+    <p>This amount is paid in full and final settlement for services rendered and has been received without dispute.</p>
+
+    <div class="field"><span class="label">ID Number:</span> {{ employee["ID Number"] }}</div>
+    <div class="field"><span class="label">Contact:</span> {{ employee.Contact }}</div>
+  </div>
+
+  <div class="signature">
+    <p><span class="label">Employee Signature:</span> ___________________________</p>
+    <p><span class="label">Date:</span> ___________________________</p>
+  </div>
+
+</body>
+</html>

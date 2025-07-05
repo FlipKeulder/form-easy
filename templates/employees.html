@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Employees - Form-Easy{% endblock %}
+
+{% block content %}
+    <section class="text-center mt-4">
+        <h2>Select an Action for Employees</h2>
+        <p>Choose whether to add, edit, or remove an employee record.</p>
+
+        <div class="button-container mt-3">
+            <a href="{{ url_for('add_employee') }}" class="btn btn-success">Add</a>
+            <a href="{{ url_for('edit_employee') }}" class="btn btn-sucsess">Edit</a>
+            <a href="{{ url_for('remove_employee') }}" class="btn btn-sucsess">Remove</a>
+        </div>
+
+        <!-- Employee Feature Overview -->
+    <section class="container mt-5">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h3>👥 Register New Staff</h3>
+                <p>Capture essential details like ID, name, and contact to build your database.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>📝 Keep Records Updated</h3>
+                <p>Edit employee details when changes arise. No duplicate entries, no confusion.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>🗑️ Clean Up with Confidence</h3>
+                <p>Easily remove inactive workers or errors while ensuring data stays consistent.</p>
+            </div>
+        </div>
+    </section>
+
+
+    </section>
+{% endblock %}

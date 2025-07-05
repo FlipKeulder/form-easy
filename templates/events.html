@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Create Event - Form-Easy{% endblock %}
+
+{% block content %}
+<section class="container mt-5">
+    <h2 class="text-center">Create an Event</h2>
+    <p class="text-center">Fill in the details below to log an event.</p>
+
+    <!-- Event Form Card -->
+    <form action="{{ url_for('events') }}" method="POST" class="mx-auto p-4 shadow rounded" style="max-width: 900px;">
+        
+        <!-- Event Input Fields -->
+        <div class="row justify-content-center mb-4">
+            <!-- Event Name -->
+            <!-- This dropdown allows the user to select the type of event they are creating.
+            it use to be a text input, but now it is a select dropdown for better user experience
+            and to ensure consistency in event types. -->
+            <div class="col-md-4">
+                <label for="eventName" class="form-label">Event Name</label>
+                <select id="eventName" name="eventName" class="form-select" required>
+                    <option value="Cleaning Shop">Cleaning Shop</option>
+                    <option value="Offload Truck">Offload Truck</option>
+                    <option value="Assist in Store Rooms">Assist in Store Rooms</option>
+                    <option value="Assist in Shop">Assist in Shop</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+
+            <!-- Event Date -->
+            <div class="col-md-4">
+                <label for="eventDate" class="form-label">Select Date</label>
+                <input type="date" class="form-control" id="eventDate" name="eventDate"
+                       placeholder="yyyy/mm/dd" required>
+            </div>
+
+            <!-- Amount Payable -->
+            <!-- I made this field two decimal places to ensure that the amount is always formatted correctly
+            but i found that i had to format it in other places as well -->
+            <div class="col-md-4">
+                <label for="amountPayable" class="form-label">Amount Payable</label>
+                <input type="number" class="form-control" id="amountPayable" name="amountPayable"
+                       placeholder="0.00" min="0" step="0.01" required>
+            </div>
+        </div>
+
+        <!-- Employee Assignment -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-6 text-center">
+                <label for="employeeSelect" class="form-label">Assign Employee</label>
+                <select class="form-select w-100" id="employeeSelect">
+                    <option disabled selected>Selection</option>
+                    {% for employee in all_employees %}
+                        <option value="{{ employee['ID Number'] }}">
+                            {{ employee['Surname'] }}, {{ employee['Name'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="btn btn-success mt-2" onclick="addEmployee()">Add to Event</button>
+            </div>
+        </div>
+
+        <!-- Assigned Employee List -->
+        <!-- This list just gives a preview of the employees already assigned the the event
+        and to enable the user not to add an emplyee twice to the same event-->
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Assigned Employees:</h5>
+                <ul id="employeeList" class="list-group"></ul>
+                <input type="hidden" name="assignedEmployees" id="assignedEmployees">
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-secondary">Continue</button>
+        </div>
+    </form>
+
+    <!-- Feature Overview -->
+    <section class="mt-4 mb-5">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h4>📝 Create Events</h4>
+                <p>Schedule and define events with date, description, and amount payable.</p>
+            </div>
+            <div class="col-md-4">
+                <h4>👥 Assign Participants</h4>
+                <p>Select employees and link them to each event using the dropdown.</p>
+            </div>
+            <div class="col-md-4">
+                <h4>💾 Save & Export</h4>
+                <p>Automatically store the event and prepare for reporting or printing.</p>
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<!-- This script handles the dynamic addition of employees to the event
+     and updates the hidden input field with the assigned employee IDs. -->
+<script>
+
+// Initialize an array to keep track of assigned employee IDs
+// This will prevent duplicate assignments and manage the list dynamically
+let assignedEmployees = [];
+
+// Function to add an employee to the event
+// It retrieves the selected employee from the dropdown, checks if they are already assigned,
+// and updates the list of assigned employees accordingly.
+// It also updates a hidden input field with the assigned employee IDs in JSON format.
+function addEmployee() {
+    const select = document.getElementById("employeeSelect");
+    const employeeId = select.value;
+    const employeeName = select.options[select.selectedIndex].text;
+
+    if (!employeeId || assignedEmployees.includes(employeeId)) return;
+
+    assignedEmployees.push(employeeId);
+
+    const list = document.getElementById("employeeList");
+    const listItem = document.createElement("li");
+    listItem.textContent = employeeName;
+    listItem.classList.add("list-group-item");
+    listItem.dataset.id = employeeId;
+
+    // Remove employee on click
+    listItem.addEventListener("click", function () {
+        assignedEmployees = assignedEmployees.filter(id => id !== this.dataset.id);
+        this.remove();
+        document.getElementById("assignedEmployees").value = JSON.stringify(assignedEmployees);
+    });
+
+    // Append the new employee to the list
+    list.appendChild(listItem);
+    document.getElementById("assignedEmployees").value = JSON.stringify(assignedEmployees);
+}
+</script>
+{% endblock %}

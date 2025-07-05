@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Remove Employee - Form-Easy{% endblock %}
+
+{% block content %}
+<section class="container mt-5">
+    <h2 class="text-center">Remove Employee</h2>
+    <p class="text-center">Select an employee and confirm removal.</p>
+
+    <!-- Success alert (centered, form-aligned) -->
+    {% if session.get("success") %}
+    <div class="alert alert-success text-center mx-auto" style="max-width: 400px;">
+        {{ session.pop("success") }}
+    </div>
+    {% endif %}
+
+    <!-- Error alert (centered, form-aligned) -->
+    {% if session.get("error") %}
+    <div class="alert alert-danger text-center mx-auto" style="max-width: 400px;">
+        {{ session.pop("error") }}
+    </div>
+    {% endif %}
+
+    <!-- 👤 Employee selector + submit button -->
+    <form action="{{ url_for('remove_employee') }}" method="POST" class="text-center mb-4">
+        <label for="employee_select" class="form-label">Choose an Employee:</label>
+        <select name="id_number" id="employee_select" class="form-select w-75 mx-auto"
+                onchange="document.getElementById('removeButton').disabled = false;"
+                style="max-height: 100px; overflow-y: auto; display: block;">
+            <option disabled selected>Selection</option>
+            {% for employee in all_employees %}
+                <option value="{{ employee['ID Number'] }}">
+                    {{ employee['Surname'] }}, {{ employee['Name'] }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <!-- JS-controlled warning fallback -->
+        <div id="warningMessage" class="alert alert-warning text-center mt-3 d-none">
+            ⚠️ Please select an employee before removing.
+        </div>
+
+        <!-- Submit removal -->
+        <button type="submit" class="btn btn-secondary text-white mt-3" id="removeButton" disabled>
+            Remove
+        </button>
+    </form>
+
+    <!-- Irreversible change notice -->
+    <section class="mt-5">
+        <div class="row justify-content-center text-center">
+            <div class="col-md-4">
+                <h3>❗ Warning</h3>
+                <p>
+                    By removing an employee, the changes cannot be undone. You will need to re-add
+                    the employee manually if you want to recover their information.
+                </p>
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}
+
+{# Handle button state + tooltips based on selection #}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdown = document.getElementById("employee_select");
+    const removeButton = document.getElementById("removeButton");
+
+    // Initialize tooltips (if used)
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+
+    // Toggle button state and appearance
+    dropdown.addEventListener("change", function () {
+        const isValid = dropdown.value !== "";
+        removeButton.classList.toggle("btn-success", isValid);
+        removeButton.classList.toggle("btn-secondary", !isValid);
+        removeButton.disabled = !isValid;
+        removeButton.setAttribute("title", isValid ? "Click to remove employee" : "Select an employee first");
+    });
+
+    // Feedback on removal submission
+    document.querySelector("form").addEventListener("submit", function () {
+        removeButton.classList.remove("btn-secondary");
+        removeButton.classList.add("btn-success");
+    });
+});
+</script>

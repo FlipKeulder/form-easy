@@ -1,0 +1,60 @@
+{% extends "base.html" %}  {# Inherits from the base layout template #}
+
+{% block title %}Add Employee - Form-Easy{% endblock %}  {# Sets the page title in the browser tab #}
+
+{% block content %}
+<!-- Main Page Content -->
+<section class="container mt-5">
+    <h2 class="text-center">Add a New Employee</h2>
+    <p class="text-center">Fill in the details below to register a new employee.</p>
+
+    <!-- Error alert block (appears if backend sends 'error') -->
+    {% if error %}
+        <div class="alert alert-danger text-center mx-auto" style="max-width: 400px;" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <!-- Success alert block (appears if backend sends 'success') -->
+    {% if success %}
+        <div class="alert alert-success text-center mx-auto" style="max-width: 400px;">
+            {{ success }}
+        </div>
+    {% endif %}
+
+    <!-- New Employee Form -->
+    <form action="{{ url_for('add_employee') }}" method="POST" class="mx-auto p-4 shadow rounded" style="max-width: 400px;">
+        
+        <!-- ID Number Field -->
+        <div class="mb-3">
+            <label for="id_number" class="form-label">ID Number</label>
+            <input type="text" name="id_number" class="form-control" required
+                pattern="^[0-9]{13}$" maxlength="13" minlength="13"
+                title="ID Number must be 13 digits long">
+        </div>
+
+        <!-- Surname Field -->
+        <div class="mb-3">
+            <label for="surname" class="form-label">Surname</label>
+            <input type="text" name="surname" class="form-control" required>
+        </div>
+
+        <!-- Name Field -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+
+        <!-- Contact Number Field -->
+        <div class="mb-3">
+            <label for="contact" class="form-label">Contact</label>
+            <input type="text" name="contact" class="form-control" required
+                pattern="^[0-9]{10}$" maxlength="10" minlength="10"
+                title="Contact must be 10 digits long">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success w-100">Add Employee</button>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,45 @@
+<!-- The employment_agreement.html, payment_acknowledgment.html and wage_claim.html templates do not have a base template,
+as they are used for exporting data to PDF -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wage Claim Form</title>
+  <style>
+    body { font-family: 'Helvetica Neue', sans-serif; margin: 2rem; }
+    h2, h3 { text-align: center; }
+    .section { margin-top: 2rem; }
+    .label { font-weight: bold; width: 200px; display: inline-block; }
+    .line { border-bottom: 1px solid #000; display: inline-block; width: 300px; }
+    .signature { margin-top: 3rem; }
+    .footer-note { margin-top: 2rem; font-size: 0.9rem; color: #444; }
+  </style>
+</head>
+<body>
+
+  <h2>Employee Wage Claim Form</h2>
+
+  <div class="section">
+    <p><span class="label">Name:</span> {{ employee.Name }} {{ employee.Surname }}</p>
+    <p><span class="label">ID Number:</span> {{ employee["ID Number"] }}</p>
+    <p><span class="label">Contact:</span> {{ employee.Contact }}</p>
+    <p><span class="label">Event:</span> {{ event.Name }}</p>
+    <p><span class="label">Date:</span> {{ event.Date }}</p>
+    <p><span class="label">Amount Payable:</span> R {{ event.AmountPayable }}</p>
+  </div>
+
+  <div class="section">
+    <p>I, the undersigned, confirm that I have rendered services for the event listed above and wish to claim the amount stated.</p>
+    <div class="signature">
+      <p><span class="label">Employee Signature:</span> ________________________</p>
+      <p><span class="label">Date:</span> ________________________</p>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Please attach this form to the signed employment agreement and payment receipt.
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Employee - Form-Easy{% endblock %}
+
+{% block content %}
+<section class="container mt-5">
+    <h2 class="text-center">Edit Employee Details</h2>
+    <p class="text-center">Select an employee and update their details.</p>
+
+    <!-- Success alert block (centered, width-matched to form) -->
+    {% if success_message %}
+    <div class="alert alert-success text-center mx-auto" style="max-width: 400px;">
+        {{ success_message }}
+    </div>
+    {% endif %}
+
+    <!-- Employee selection dropdown -->
+    <form action="{{ url_for('edit_employee') }}" method="GET" class="text-center mb-4">
+        <label for="employee_select" class="form-label">Choose an Employee:</label>
+        <select name="id_number" id="employee_select" class="form-select w-75 mx-auto"
+                onchange="this.form.submit()"
+                style="max-height: 100px; overflow-y: auto; display: block;">
+            <option disabled selected>Selection</option>
+            {% for employee in all_employees %}
+                <option value="{{ employee['ID Number'] }}">
+                    {{ employee['Surname'] }}, {{ employee['Name'] }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <!-- Edit form (shown once an employee is selected) -->
+    {% if selected_employee %}
+    <form action="{{ url_for('update_employee') }}" method="POST" class="mx-auto p-4 shadow rounded" style="max-width: 400px;">
+        <!-- Hidden ID field for form binding -->
+        <input type="hidden" name="id_number" value="{{ selected_employee['ID Number'] }}">
+
+        <!-- Surname input -->
+        <div class="mb-3">
+            <label for="surname" class="form-label">Surname</label>
+            <input type="text" name="surname" class="form-control"
+                   value="{{ selected_employee['Surname'] }}" required>
+        </div>
+
+        <!-- Name input -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" name="name" class="form-control"
+                   value="{{ selected_employee['Name'] }}" required>
+        </div>
+
+        <!-- Contact number input (10-digit constraint) -->
+        <div class="mb-3">
+            <label for="contact" class="form-label">Contact</label>
+            <input type="text" name="contact" class="form-control"
+                   value="{{ '{:0>10}'.format(selected_employee['Contact']) }}"
+                   pattern="^[0-9]{10}$" maxlength="10" minlength="10" required>
+        </div>
+
+        <!-- Save button -->
+        <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+    </form>
+    {% endif %}
+</section>
+{% endblock %}
+
+{# Auto-expand dropdown size on mobile for easier selection #}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const dropdown = document.getElementById("employee_select");
+    dropdown.addEventListener("focus", function () {
+        this.setAttribute("size", window.innerWidth < 768 ? "5" : "10");
+    });
+    dropdown.addEventListener("blur", function () {
+        this.removeAttribute("size");
+    });
+});
+</script>
+
+{# Reset input fields after submission with slight delay #}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form[action='{{ url_for('update_employee') }}']");
+    if (form) {
+        form.addEventListener("submit", function () {
+            setTimeout(() => {
+                form.reset();
+            }, 500);
+        });
+    }
+});
+</script>

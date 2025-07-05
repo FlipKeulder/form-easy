@@ -1,0 +1,57 @@
+<!-- The employment_agreement.html, payment_acknowledgment.html and wage_claim.html templates do not have a base template,
+as they are used for exporting data to PDF -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employment Agreement</title>
+  <style>
+    body { font-family: 'Georgia', serif; margin: 2rem; line-height: 1.6; }
+    h2, h3 { text-align: center; margin-bottom: 2rem; }
+    .field { margin-bottom: 1rem; }
+    .label { font-weight: bold; display: inline-block; width: 220px; }
+    .signature { margin-top: 3rem; }
+  </style>
+</head>
+<body>
+
+  <h2>Temporary Employment Agreement</h2>
+
+  <p>This agreement is entered into between:</p>
+
+  <div class="field">
+    <span class="label">Employer Name:</span> {{ employer.name }}
+  </div>
+  <div class="field">
+    <span class="label">Employee Name:</span> {{ employee.Name }} {{ employee.Surname }}
+  </div>
+  <div class="field">
+    <span class="label">ID Number:</span> {{ employee["ID Number"] }}
+  </div>
+  <div class="field">
+    <span class="label">Contact:</span> {{ employee.Contact }}
+  </div>
+
+  <p>The employee is appointed on a temporary basis to work on:</p>
+
+  <div class="field">
+    <span class="label">Event/Task:</span> {{ event.Name }}
+  </div>
+  <div class="field">
+    <span class="label">Date of Work:</span> {{ event.Date }}
+  </div>
+  <div class="field">
+    <span class="label">Rate of Pay:</span> R {{ event.AmountPayable }}
+  </div>
+
+  <p>The employee acknowledges that this employment does not exceed one day and that payment shall be made in cash on completion of the work performed.</p>
+
+  <div class="signature">
+    <p><span class="label">Employer Signature:</span> ___________________________</p>
+    <p><span class="label">Employee Signature:</span> ___________________________</p>
+    <p><span class="label">Date:</span> ___________________________</p>
+  </div>
+
+</body>
+</html>
